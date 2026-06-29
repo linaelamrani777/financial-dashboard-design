@@ -1,19 +1,20 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, FileCheck2, ScrollText, Play, Check, Trash2, AlertTriangle } from "lucide-react"
+import { Plus, FileCheck2, ScrollText, Hourglass, Play, Check, Trash2, AlertTriangle, LayoutList } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useFinance } from "@/components/finance-provider"
 import { Amount } from "@/components/amount"
 import { EngagementForm } from "@/components/engagement-form"
 import { formatDate, daysUntil, type Engagement, type EngagementStatus } from "@/lib/finance-data"
 
-type Tab = EngagementStatus
+type Filter = EngagementStatus | "tous"
 
-const TABS: { key: Tab; label: string; icon: typeof FileCheck2 }[] = [
-  { key: "a_payer", label: "À payer", icon: ScrollText },
-  { key: "en_cours", label: "En cours", icon: Play },
-  { key: "paye", label: "Historique", icon: FileCheck2 },
+const TABS: { key: Filter; label: string; icon: typeof FileCheck2 }[] = [
+  { key: "tous", label: "Tous", icon: LayoutList },
+  { key: "a_payer", label: "Non payé", icon: ScrollText },
+  { key: "en_cours", label: "En attente", icon: Hourglass },
+  { key: "paye", label: "Payé", icon: FileCheck2 },
 ]
 
 function MethodBadge({ methode }: { methode: Engagement["methode"] }) {
@@ -53,14 +54,32 @@ function DueChip({ engagement }: { engagement: Engagement }) {
   )
 }
 
-function EngagementRow({ engagement }: { engagement: Engagement }) {
+const STATUS_META: Record<EngagementStatus, { label: string; cls: string }> = {
+  a_payer: { label: "Non payé", cls: "bg-destructive/15 text-destructive" },
+  en_cours: { label: "En attente", cls: "bg-amber-400/15 text-amber-300" },
+  paye: { label: "Payé", cls: "bg-success/15 text-success" },
+}
+
+function StatusBadge({ status }: { status: EngagementStatus }) {
+  const meta = STATUS_META[status]
+  return (
+    <span className={cn("inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", meta.cls)}>
+      {meta.label}
+    </span>
+  )
+}
+
+function EngagementRow({ engagement, showStatus }: { engagement: Engagement; showStatus: boolean }) {
   const { setStatus, removeEngagement } = useFinance()
   const e = engagement
 
   return (
     <tr className="border-b border-border/60 transition-colors hover:bg-secondary/40">
       <td className="px-3 py-3">
-        <div className="font-medium text-foreground">{e.nom}</div>
+        <div className="flex items-center gap-2">
+          <span className="font-medium text-foreground">{e.nom}</span>
+          {showStatus ? <StatusBadge status={e.status} /> : null}
+        </div>
         <div className="text-xs text-muted-foreground">{e.reference}</div>
       </td>
       <td className="px-3 py-3 text-sm">{e.entreprise}</td>
@@ -124,11 +143,11 @@ function EngagementRow({ engagement }: { engagement: Engagement }) {
 
 export function EngagementsBoard() {
   const { engagements } = useFinance()
-  const [tab, setTab] = useState<Tab>("a_payer")
+  const [tab, setTab] = useState<Filter>("tous")
   const [formOpen, setFormOpen] = useState(false)
 
   const rows = engagements
-    .filter((e) => e.status === tab)
+    .filter((e) => tab === "tous" || e.status === tab)
     .sort((a, b) => {
       const da = a.status === "paye" && a.datePaiement ? a.datePaiement : a.dateEcheance
       const db = b.status === "paye" && b.datePaiement ? b.datePaiement : b.dateEcheance
@@ -136,7 +155,7 @@ export function EngagementsBoard() {
     })
 
   const total = rows.reduce((acc, e) => acc + e.montant, 0)
-  const count = (s: Tab) => engagements.filter((e) => e.status === s).length
+  const count = (s: Filter) => (s === "tous" ? engagements.length : engagements.filter((e) => e.status === s).length)
 
   return (
     <section className="rounded-xl border border-border bg-card">
@@ -198,7 +217,7 @@ export function EngagementsBoard() {
                 </td>
               </tr>
             ) : (
-              rows.map((e) => <EngagementRow key={e.id} engagement={e} />)
+              rows.map((e) => <EngagementRow key={e.id} engagement={e} showStatus={tab === "tous"} />)
             )}
           </tbody>
           {rows.length > 0 ? (
