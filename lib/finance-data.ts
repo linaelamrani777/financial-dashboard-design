@@ -46,19 +46,9 @@ export type ModuleKey = "engagements" | "banques" | "fixes"
 
 export const MODULES: { key: ModuleKey; label: string; description: string }[] = [
   {
-    key: "engagements",
-    label: "Engagements & Sorties",
-    description: "Chèques, LCN et sorties prévisionnelles",
-  },
-  {
     key: "banques",
     label: "Engagements bancaires",
     description: "Détail des engagements par banque",
-  },
-  {
-    key: "fixes",
-    label: "Charges fixes",
-    description: "Masse salariale, crédits, loyers",
   },
 ]
 
