@@ -6,7 +6,6 @@ import {
   EyeOff,
   FileText,
   Wallet,
-  AlertTriangle,
   Package,
   ClipboardList,
   Landmark,
@@ -179,7 +178,6 @@ export function HomeView() {
         <KpiCard label="Total facturé" value={k.totalInvoiced} icon={FileText} accent="primary" hint="Année en cours" trend={{ dir: "up", value: "8.2%", good: true }} />
         <KpiCard label="Encours à recouvrer" value={k.outstanding} icon={Wallet} accent="muted" hint="Factures non réglées" />
         <KpiCard label="Encaissé ce mois" value={k.paidThisMonth} icon={TrendingUp} accent="success" trend={{ dir: "up", value: "12%", good: true }} />
-        <KpiCard label="En retard" value={k.overdueAmount} icon={AlertTriangle} accent="danger" hint={`${k.overdueCount} factures échues`} />
         <KpiCard label="Bons de commande" value={k.openPoValue} icon={Package} accent="muted" hint={`${k.openPoCount} ouverts`} />
         <KpiCard label="Chèques & LCN" value={k.checksPendingValue} icon={Landmark} accent="muted" hint={`${k.checksPendingCount} en attente`} />
         <KpiCard label="Livraisons en attente" value={k.pendingDeliveries} icon={ClipboardList} accent="muted" hint="Bons de livraison" unit="bons" />
