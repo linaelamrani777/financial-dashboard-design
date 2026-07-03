@@ -3,6 +3,8 @@
 import { useState } from "react"
 import {
   Home,
+  Users,
+  ShieldCheck,
   Package,
   ClipboardList,
   FileText,
@@ -17,6 +19,8 @@ import { cn } from "@/lib/utils"
 
 const NAV = [
   { key: "home", label: "Home", icon: Home },
+  { key: "users", label: "Users", icon: Users },
+  { key: "roles", label: "Roles", icon: ShieldCheck },
   { key: "po", label: "Purchase Orders", icon: Package },
   { key: "delivery", label: "Delivery Notes", icon: ClipboardList },
   { key: "invoices", label: "Invoices", icon: FileText },

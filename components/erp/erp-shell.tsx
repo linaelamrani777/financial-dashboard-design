@@ -4,8 +4,10 @@ import { useState } from "react"
 import { Construction } from "lucide-react"
 import { Sidebar } from "@/components/erp/sidebar"
 import { HomeView } from "@/components/erp/home-view"
+import { RolesView } from "@/components/erp/roles-view"
 
 const TITLES: Record<string, string> = {
+  users: "Users",
   po: "Purchase Orders",
   delivery: "Delivery Notes",
   invoices: "Invoices",
@@ -35,7 +37,13 @@ export function ErpShell() {
     <div className="flex min-h-dvh bg-background text-foreground">
       <Sidebar active={active} onSelect={setActive} />
       <main className="min-w-0 flex-1 overflow-y-auto">
-        {active === "home" ? <HomeView /> : <Placeholder title={TITLES[active] ?? "Module"} />}
+        {active === "home" ? (
+          <HomeView />
+        ) : active === "roles" ? (
+          <RolesView />
+        ) : (
+          <Placeholder title={TITLES[active] ?? "Module"} />
+        )}
       </main>
     </div>
   )
