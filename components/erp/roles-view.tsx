@@ -41,7 +41,14 @@ export function RolesView() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 py-8">
+    <div
+      className={cn(
+        "w-full px-6 py-8 transition-[padding] duration-300 ease-out",
+        // When the panel is open, push the content left and let it shrink so the
+        // table stays fully visible instead of being covered by the slide-over.
+        panelOpen ? "lg:pr-[30rem]" : "mx-auto max-w-6xl",
+      )}
+    >
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground text-balance">Roles &amp; Permissions</h1>
